@@ -2,7 +2,7 @@ import { Opcional } from '@/core/@types/opcional'
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
-interface AnswerProps {
+export interface AnswerProps {
   content: string
   authorId: UniqueEntityID
   questionId: UniqueEntityID
@@ -33,11 +33,11 @@ export class Answer extends Entity<AnswerProps> {
   }
 
   get authorId() {
-    return this.props.authorId
+    return this.props.authorId.toString()
   }
 
   get questionId() {
-    return this.props.questionId
+    return this.props.questionId.toString()
   }
 
   get createAt() {
