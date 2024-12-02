@@ -24,7 +24,7 @@ describe('Edit Question', () => {
 
     await sut.execute({
       authorId: '1',
-      questionId: newQuestion.id,
+      questionId: newQuestion.id.toString(),
       title: 'New title',
       content: 'New content',
     })
@@ -45,10 +45,10 @@ describe('Edit Question', () => {
 
     await inMemoryQuestionsRepository.create(newQuestion)
 
-    expect(async () => {
-      return await sut.execute({
+    await expect(async () => {
+      return sut.execute({
         authorId: '2',
-        questionId: newQuestion.id,
+        questionId: newQuestion.id.toString(),
         title: 'New title',
         content: 'New content',
       })

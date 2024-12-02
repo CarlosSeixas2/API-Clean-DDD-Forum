@@ -6,7 +6,7 @@ import { makeAnswer } from 'tests/factories/make-answer'
 let inMemoryAnswerRepository: InMemoryAnswersRepository
 let sut: EditAnswerUseCase
 
-describe('Edit Question', () => {
+describe('Edit Answer', () => {
   beforeEach(() => {
     inMemoryAnswerRepository = new InMemoryAnswersRepository()
     sut = new EditAnswerUseCase(inMemoryAnswerRepository)
@@ -43,8 +43,8 @@ describe('Edit Question', () => {
 
     await inMemoryAnswerRepository.create(newQuestion)
 
-    expect(async () => {
-      return await sut.execute({
+    await expect(async () => {
+      return sut.execute({
         answerId: '1',
         authorId: '2',
         content: 'New title',

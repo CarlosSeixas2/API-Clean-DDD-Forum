@@ -8,23 +8,23 @@ interface DeleteAnswerUseCaseRequest {
 interface DeleteAnswerUseCaseResponse {}
 
 export class DeleteAnswerUseCase {
-  constructor(private questionRepository: AnswerRepository) {}
+  constructor(private answerRepository: AnswerRepository) {}
 
   async execute({
     authorId,
     answerId,
   }: DeleteAnswerUseCaseRequest): Promise<DeleteAnswerUseCaseResponse> {
-    const question = await this.questionRepository.findById(answerId)
+    const answer = await this.answerRepository.findById(answerId)
 
-    if (!question) {
-      throw new Error('Question not found')
+    if (!answer) {
+      throw new Error('Answer not found')
     }
 
-    if (authorId !== question.authorId) {
+    if (authorId !== answer.authorId) {
       throw new Error('You are not the author of this question')
     }
 
-    await this.questionRepository.delete(question)
+    await this.answerRepository.delete(answer)
 
     return {}
   }
