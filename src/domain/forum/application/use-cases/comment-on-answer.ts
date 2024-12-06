@@ -1,45 +1,50 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { QuestionsRepository } from '../repositories/questions-repository'
-import { QuestionComment } from '../../enterprise/entities/question-comment'
-import { QuestionsCommentsRepository } from '../repositories/question-comments-repository'
+import { AnswerComment } from '../../enterprise/entities/answer-comment'
+import { AnswerRepository } from '../repositories/answers-repository'
+import { Either, left, right } from '@/core/either'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
+import { AnswerCommentsRepository } from '../repositories/answer-comments-repository'
 
-interface CommentOnUseCaseRequest {
+interface CommentOnAnswerUseCaseRequest {
   authorId: string
-  questionId: string
+  answerId: string
   content: string
 }
 
-interface CommentOnUseCaseResponse {
-  questionComment: QuestionComment
-}
+type CommentOnAnswerUseCaseResponse = Either<
+  ResourceNotFoundError,
+  {
+    answerComment: AnswerComment
+  }
+>
 
-export class CommentOnUseCase {
+export class CommentOnAnswerUseCase {
   constructor(
-    private questionRepository: QuestionsRepository,
-    private questionCommentsRepository: QuestionsCommentsRepository,
+    private asnwerRepository: AnswerRepository,
+    private asnwerCommentsRepository: AnswerCommentsRepository,
   ) {}
 
   async execute({
     authorId,
-    questionId,
+    answerId,
     content,
-  }: CommentOnUseCaseRequest): Promise<CommentOnUseCaseResponse> {
-    const question = await this.questionRepository.findById(questionId)
+  }: CommentOnAnswerUseCaseRequest): Promise<CommentOnAnswerUseCaseResponse> {
+    const answer = await this.asnwerRepository.findById(answerId)
 
-    if (!question) {
-      throw new Error('Question not found')
+    if (!answer) {
+      return left(new ResourceNotFoundError())
     }
 
-    const questionComment = QuestionComment.create({
+    const answerComment = AnswerComment.create({
       authorId: new UniqueEntityID(authorId),
+      answerId: new UniqueEntityID(answerId),
       content,
-      questionId: new UniqueEntityID(questionId),
     })
 
-    await this.questionCommentsRepository.create(questionComment)
+    await this.asnwerCommentsRepository.create(answerComment)
 
-    return {
-      questionComment,
-    }
+    return right({
+      answerComment,
+    })
   }
 }
